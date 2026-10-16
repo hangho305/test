@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <meta name="theme-color" content="#f8e7eb" />
+  <title>Happy Birthday Gia Hân ♡</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: #fff;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100svh;
+      background: #fff;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button {
+      touch-action: manipulation;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    /* Màn hình mở đầu */
+    .intro {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      background: #f8e7eb;
+    }
+
+    .start-button {
+      padding: 15px 42px;
+      border: 1px solid #b97d84;
+      border-radius: 999px;
+      background: #fff8fa;
+      color: #a2646e;
+      font: 20px Georgia, serif;
+      cursor: pointer;
+      box-shadow: 0 5px 20px #ba7c8414;
+    }
+
+    .start-button:active {
+      transform: scale(0.96);
+    }
+
+    /* Full chiều ngang, căn giữa theo chiều dọc.
+       Nếu màn thấp hơn design thì cho phép cuộn. */
+    .main {
+      min-height: 100svh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scene {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1080 / 1920;
+      flex-shrink: 0;
+    }
+
+    .background {
+      display: block;
+      width: 100%;
+      height: 100%;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* Vị trí và kích thước tính theo khung 1080 × 1920 */
+    .envelope {
+      position: absolute;
+      width: 60%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      transform-origin: center;
+    }
+
+    .envelope img {
+      display: block;
+      width: 100%;
+      height: auto;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .envelope-1 {
+      left: 7%;
+      top: 35.8%;
+      --angle: -5deg;
+      animation: sway 3.8s ease-in-out infinite;
+    }
+
+    .envelope-2 {
+      left: 32%;
+      top: 65.7%;
+      --angle: 4deg;
+      animation: sway 4.2s ease-in-out -1.4s infinite;
+    }
+
+    @keyframes sway {
+      0%, 100% {
+        transform: rotate(calc(var(--angle) - 1.5deg));
+      }
+      50% {
+        transform: rotate(calc(var(--angle) + 1.5deg));
+      }
+    }
+
+    .envelope:focus-visible {
+      outline: 2px solid #ad6e79;
+      outline-offset: 8px;
+    }
+
+    /* Popup */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding:
+        max(18px, env(safe-area-inset-top))
+        0
+        max(18px, env(safe-area-inset-bottom));
+      background: rgb(0 0 0 / 20%);
+      opacity: 0;
+      transition: opacity 260ms ease;
+    }
+
+    .modal.is-open {
+      opacity: 1;
+    }
+
+    .note {
+      display: block;
+      width: auto;
+      height: auto;
+      max-width: 86vw;
+      max-height: 90%;
+      object-fit: contain;
+      opacity: 0;
+      transform: translateY(-65px);
+      transition:
+        transform 480ms cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 300ms ease;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .modal.is-open .note {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Đóng chỉ fade out, không trượt ngược lên */
+    .modal.is-closing .note {
+      opacity: 0;
+      transform: translateY(0);
+      transition: opacity 260ms ease;
+    }
+
+    /* Confetti không chặn thao tác bấm */
+    #confetti-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    #confetti-layer canvas {
+      display: block;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .envelope {
+        animation: none;
+        transform: rotate(var(--angle));
+      }
+
+      .note {
+        transform: none;
+        transition: opacity 200ms ease;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="intro" id="intro">
+    <button class="start-button" id="start-button" type="button">
+      Enter ♡
+    </button>
+  </div>
+
+  <main class="main" id="main" hidden>
+    <div class="scene">
+      <img
+        class="background"
+        src="./asset/background.png"
+        alt="Happy 19th Birthday Gia Hân"
+        fetchpriority="high"
+        draggable="false"
+      />
+
+      <button
+        class="envelope envelope-1"
+        type="button"
+        data-note="./asset/note-1.png"
+        aria-label="Mở thiệp thứ nhất"
+      >
+        <img
+          src="./asset/envelope-1.png"
+          alt=""
+          draggable="false"
+        />
+      </button>
+
+      <button
+        class="envelope envelope-2"
+        type="button"
+        data-note="./asset/note-2.png"
+        aria-label="Mở thiệp thứ hai"
+      >
+        <img
+          src="./asset/envelope-2.png"
+          alt=""
+          draggable="false"
+        />
+      </button>
+    </div>
+  </main>
+
+  <div
+    class="modal"
+    id="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Thiệp chúc mừng sinh nhật"
+    tabindex="-1"
+    hidden
+  >
+    <img class="note" id="note" alt="Lời chúc sinh nhật" />
+  </div>
+
+  <div id="confetti-layer" aria-hidden="true"></div>
+
+  <audio id="music" src="./asset/music.mp3" preload="auto" loop></audio>
+
+  <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
+
+  <script>
+    const intro = document.getElementById("intro");
+    const startButton = document.getElementById("start-button");
+    const main = document.getElementById("main");
+    const music = document.getElementById("music");
+    const modal = document.getElementById("modal");
+    const note = document.getElementById("note");
+    const envelopes = document.querySelectorAll(".envelope");
+
+    let lastEnvelope = null;
+    let closing = false;
+    let previousOverflow = "";
+
+    // Load sẵn hai ảnh thiệp.
+    envelopes.forEach((envelope) => {
+      const image = new Image();
+      image.src = envelope.dataset.note;
+    });
+
+    startButton.addEventListener("click", () => {
+      // Gọi play trực tiếp trong thao tác bấm để kích hoạt audio.
+      music.volume = 0.5;
+      music.play().catch(() => {
+        // Nếu mạng chậm hoặc trình duyệt chặn, thử lại ở lần bấm kế tiếp.
+        document.addEventListener("click", () => {
+          music.play().catch(() => {});
+        }, { once: true });
+      });
+
+      intro.hidden = true;
+      main.hidden = false;
+      startConfetti();
+    }, { once: true });
+
+    envelopes.forEach((envelope) => {
+      envelope.addEventListener("click", () => {
+        if (closing) return;
+
+        lastEnvelope = envelope;
+        note.src = envelope.dataset.note;
+
+        modal.classList.remove("is-open", "is-closing");
+        modal.hidden = false;
+
+        previousOverflow = document.body.style.overflow;
+        document.body.style.overflow = "hidden";
+        main.inert = true;
+
+        // Tạo trạng thái ban đầu trước khi chạy transition.
+        void modal.offsetWidth;
+        modal.classList.add("is-open");
+        modal.focus({ preventScroll: true });
+      });
+    });
+
+    function closeNote() {
+      if (modal.hidden || closing) return;
+
+      closing = true;
+      modal.classList.add("is-closing");
+      modal.classList.remove("is-open");
+
+      window.setTimeout(() => {
+        modal.hidden = true;
+        modal.classList.remove("is-closing");
+        document.body.style.overflow = previousOverflow;
+        main.inert = false;
+        closing = false;
+
+        lastEnvelope?.focus({ preventScroll: true });
+      }, 280);
+    }
+
+    // Chỉ đóng khi bấm vùng ngoài ảnh.
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) closeNote();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeNote();
+
+      // Giữ focus trong popup khi dùng bàn phím.
+      if (event.key === "Tab" && !modal.hidden) {
+        event.preventDefault();
+        modal.focus();
+      }
+    });
+
+    // Một đợt confetti bằng p5.js, tự dừng sau khi rơi hết.
+    function startConfetti() {
+      if (typeof window.p5 !== "function") return;
+
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+      ).matches;
+
+      if (reducedMotion) return;
+
+      new p5((p) => {
+        let pieces = [];
+        let startedAt = 0;
+
+        const colors = [
+          "#d68191",
+          "#efb5c2",
+          "#c89b62",
+          "#f4dca4",
+          "#b6cbb9",
+          "#ffffff"
+        ];
+
+        p.setup = () => {
+          p.pixelDensity(1);
+          p.createCanvas(window.innerWidth, window.innerHeight);
+          p.noStroke();
+          startedAt = p.millis();
+
+          pieces = Array.from({ length: 150 }, () => ({
+            x: p.random(p.width),
+            y: p.random(-p.height * 0.8, -15),
+            vx: p.random(-30, 30),
+            vy: p.random(100, 210),
+            width: p.random(5, 10),
+            height: p.random(8, 15),
+            angle: p.random(p.TWO_PI),
+            spin: p.random(-5, 5),
+            phase: p.random(p.TWO_PI),
+            color: p.random(colors)
+          }));
+        };
+
+        p.draw = () => {
+          p.clear();
+
+          const dt = Math.min(p.deltaTime / 1000, 0.04);
+          const time = p.millis() / 1000;
+
+          pieces.forEach((piece) => {
+            piece.vy += 18 * dt;
+            piece.x += (
+              piece.vx + Math.sin(time * 2 + piece.phase) * 24
+            ) * dt;
+            piece.y += piece.vy * dt;
+            piece.angle += piece.spin * dt;
+
+            p.push();
+            p.translate(piece.x, piece.y);
+            p.rotate(piece.angle);
+            p.fill(piece.color);
+            p.rectMode(p.CENTER);
+            p.rect(
+              0,
+              0,
+              piece.width * Math.cos(time * 4 + piece.phase),
+              piece.height,
+              1
+            );
+            p.pop();
+          });
+
+          pieces = pieces.filter(
+            (piece) => piece.y < p.height + 30
+          );
+
+          if (!pieces.length || p.millis() - startedAt > 12000) {
+            p.remove();
+          }
+        };
+
+        p.windowResized = () => {
+          p.resizeCanvas(window.innerWidth, window.innerHeight);
+        };
+      }, "confetti-layer");
+    }
+  </script>
+</body>
+</html>
